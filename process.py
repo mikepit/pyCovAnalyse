@@ -9,6 +9,7 @@ if __name__ == '__main__':
     decimal_char = ','
     path = r"data/"
     in_path = Path(path)
+    in_path.mkdir(parents=True, exist_ok=True)
     # main dataframe
     df = pd.read_csv(data_url)
     df.index.names = ['id']
