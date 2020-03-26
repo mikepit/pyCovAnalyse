@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     country_path = r"assets/countries.csv"
     # do not use default NA values, because of NA region
-    cf = pd.read_csv(country_path, sep=",", keep_default_na=False, na_values=[''])
+    cf = pd.read_csv(country_path, sep=";", keep_default_na=False, na_values=[''])
     cf.index.names = ['id']
     pcf = cf
     cf = cf.drop('code', 1)
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     pcdf = gdf
 
     with open(in_path.joinpath("time_series_confirmed_country.csv"), 'w') as csv_file:
-        gdf.to_csv(path_or_buf=csv_file, sep="\t", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        gdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
 
     gdf = gdf.drop('region', 1)
 
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     rdf.index = pd.to_datetime(rdf.index)
 
     with open(in_path.joinpath("time_series_confirmed_country_pivot.csv"), 'w') as csv_file:
-        rdf.to_csv(path_or_buf=csv_file, sep="\t", line_terminator='\n', encoding='utf-8')
+        rdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8')
 
     # attention, garder country comme index
     # use df.diff() luke!
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     tdf = tdf.sort_values(by=[date_cols[-1]], ascending=True)
 
     with open(in_path.joinpath("time_series_confirmed_country_day.csv"), 'w') as csv_file:
-        tdf.to_csv(path_or_buf=csv_file, sep="\t", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        tdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
 
     # calc percentage change between 2 cols
     pdf = pdf.set_index("Country/Region").pct_change(periods=1, axis='columns')
@@ -86,7 +86,7 @@ if __name__ == '__main__':
 
     # use comma as decimal separator
     with open(in_path.joinpath("time_series_confirmed_country_pct.csv"), 'w') as csv_file:
-        pdf.to_csv(path_or_buf=csv_file, sep="\t", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        pdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
 
     # pcf pcdf
     pcdf = pd.concat([pcdf.set_index("Country/Region"), pcf.set_index("country")], axis=1, join='outer', sort=False)
@@ -105,4 +105,4 @@ if __name__ == '__main__':
 
     # cases by population and normalized for 1M
     with open(in_path.joinpath("time_series_confirmed_country_cases_1m_pop.csv"), 'w') as csv_file:
-        pcdf.to_csv(path_or_buf=csv_file, sep="\t", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        pcdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
