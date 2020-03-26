@@ -1,0 +1,35 @@
+name: Run and commit
+
+on:
+  push:
+    branches:
+      - master
+  schedule: # every 6 hours
+    - cron:  '0 */6 * * *'
+jobs:
+  execute_script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+      - name: Execute script
+        run: |
+            python process.py
+      - name: Commit files
+        run: |
+            git config --local user.email "29627073+mikepit@users.noreply.github.com"
+            git config --local user.name "mikepit"
+            git add *.csv
+            git commit -m "Update data"
+      - name: Push data
+        uses: ad-m/github-push-action@master
+        with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
