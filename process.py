@@ -79,9 +79,9 @@ if __name__ == '__main__':
     with open(in_path.joinpath("time_series_confirmed_country_day.csv"), 'w') as csv_file:
         tdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
 
-    # calc percentage change between 2 cols
-    pdf = pdf.set_index("Country/Region").pct_change(periods=1, axis='columns')
-    # insert performed with values from reg["region"].values
+    # calc percentage change between 2 cols, rounded
+    pdf = pdf.set_index("Country/Region").pct_change(periods=1, axis='columns').round(3)
+    # insert region series
     pdf.insert(0, "region", value=reg["region"].values, allow_duplicates=True)
 
     # use comma as decimal separator
@@ -101,7 +101,9 @@ if __name__ == '__main__':
     norm_pop = 1000000
     pop["population"] = pcdf.pop('population')
     pop = pop.reset_index()
-    pcdf = pcdf.div(pop["population"].values, axis=0).mul(norm_pop)
+    pcdf = pcdf.div(pop["population"].values, axis=0).mul(norm_pop).round(1)
+    # insert population series
+    pcdf.insert(0, "population", value=pop["population"].values, allow_duplicates=True)
 
     # cases by population and normalized for 1M
     with open(in_path.joinpath("time_series_confirmed_country_cases_1m_pop.csv"), 'w') as csv_file:
