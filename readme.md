@@ -1,8 +1,12 @@
 
-# Process COVID data: confirmed cases time series
+# COVID-19 confirmed cases datasets
 
-Process data from [time_series_covid19_confirmed_global.csv](https://github.com/CSSEGISandData/COVID-19/blob/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv)
-and create multiple transformed datasets.
+## About
+
+This repository contains processed datasets of COVID-19 confirmed cases:
+* time series files are available inside the [/data](./data) folder.
+
+Confirmed cases data is read from [time_series_covid19_confirmed_global.csv](https://github.com/CSSEGISandData/COVID-19/blob/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv).
 
 ## Available data
 
