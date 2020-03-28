@@ -14,6 +14,12 @@ if __name__ == '__main__':
     df = pd.read_csv(data_url)
     df.index.names = ['id']
 
+    # rename korea
+    df['Country/Region'] = df['Country/Region'].replace({'Korea, South': 'South Korea'})
+    # remove  ships
+    df = df[~df['Country/Region'].isin(['Cruise Ship'])]
+    df = df[~df['Country/Region'].isin(['Diamond Princess'])]
+
     country_path = r"assets/countries.csv"
     # do not use default NA values, because of NA region
     cf = pd.read_csv(country_path, sep=";", keep_default_na=False, na_values=[''])
