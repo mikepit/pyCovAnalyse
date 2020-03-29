@@ -22,6 +22,8 @@ if __name__ == '__main__':
     # use system decimal_point
     locale.setlocale(locale.LC_ALL, "")
     decimal_char = locale.localeconv()["decimal_point"]
+    sep_char = ","
+
     path = r"data/"
     in_path = Path(path)
     in_path.mkdir(parents=True, exist_ok=True)
@@ -70,7 +72,7 @@ if __name__ == '__main__':
     pcdf = gdf
 
     with open(in_path.joinpath("time_series_confirmed_country.csv"), 'w') as csv_file:
-        gdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        gdf.to_csv(path_or_buf=csv_file, sep=sep_char, line_terminator='\n', encoding='utf-8', decimal=decimal_char)
 
     gdf = gdf.drop('region', 1)
 
@@ -81,7 +83,7 @@ if __name__ == '__main__':
     rdf.index = pd.to_datetime(rdf.index)
 
     with open(in_path.joinpath("time_series_confirmed_country_pivot.csv"), 'w') as csv_file:
-        rdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8')
+        rdf.to_csv(path_or_buf=csv_file, sep=sep_char, line_terminator='\n', encoding='utf-8')
 
     # attention, garder country comme index
     # use df.diff() luke!
@@ -96,7 +98,7 @@ if __name__ == '__main__':
     tdf = tdf.sort_values(by=[date_cols[-1]], ascending=True)
 
     with open(in_path.joinpath("time_series_confirmed_country_day.csv"), 'w') as csv_file:
-        tdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        tdf.to_csv(path_or_buf=csv_file, sep=sep_char, line_terminator='\n', encoding='utf-8', decimal=decimal_char)
 
     # calc percentage change between 2 cols, rounded
     pdf = pdf.set_index("Country/Region").pct_change(periods=1, axis='columns').round(3)
@@ -107,7 +109,7 @@ if __name__ == '__main__':
     # use comma as decimal separator
     # remove inf results
     with open(in_path.joinpath("time_series_confirmed_country_pct.csv"), 'w') as csv_file:
-        pdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        pdf.to_csv(path_or_buf=csv_file, sep=sep_char, line_terminator='\n', encoding='utf-8', decimal=decimal_char)
 
     # pcf pcdf
     pcdf = pd.concat([pcdf.set_index("Country/Region"), pcf.set_index("country")], axis=1, join='outer', sort=False)
@@ -128,7 +130,7 @@ if __name__ == '__main__':
 
     # cases by population and normalized for 1M
     with open(in_path.joinpath("time_series_confirmed_country_cases_1m_pop.csv"), 'w') as csv_file:
-        pcdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        pcdf.to_csv(path_or_buf=csv_file, sep=sep_char, line_terminator='\n', encoding='utf-8', decimal=decimal_char)
 
     # log10 dataframe
     # gdt_cols = gdf.columns[~gdf.columns.isin(['Country/Region'])]
@@ -137,6 +139,6 @@ if __name__ == '__main__':
 
     # log10 cases by population
     with open(in_path.joinpath("time_series_confirmed_country_log10.csv"), 'w') as csv_file:
-        ldf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        ldf.to_csv(path_or_buf=csv_file, sep=sep_char, line_terminator='\n', encoding='utf-8', decimal=decimal_char)
 
     print("Done")
