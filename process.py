@@ -1,12 +1,27 @@
 # coding: utf-8
 
+import locale
 from pathlib import Path
 import pandas as pd
+import numpy as np
+
+
+def log10_row(row):
+    try:
+        for key in row.keys():
+            if not isinstance(row[key], str) and isinstance(row[key], float) and row[key] != 0:
+                row[key] = np.log10(row[key])
+    except Exception as e:
+        print("error log10", e)
+    return row
+
 
 if __name__ == '__main__':
     data_url = r'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data' \
                r'/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv '
-    decimal_char = ','
+    # use system decimal_point
+    locale.setlocale(locale.LC_ALL, "")
+    decimal_char = locale.localeconv()["decimal_point"]
     path = r"data/"
     in_path = Path(path)
     in_path.mkdir(parents=True, exist_ok=True)
@@ -16,19 +31,17 @@ if __name__ == '__main__':
 
     # rename korea
     df['Country/Region'] = df['Country/Region'].replace({'Korea, South': 'South Korea'})
-    # remove  ships
+    # Remove Cruise Ship
     df = df[~df['Country/Region'].isin(['Cruise Ship'])]
     df = df[~df['Country/Region'].isin(['Diamond Princess'])]
+    # dt_cols = df.columns[~df.columns.isin(['Province/State', 'Country/Region', 'Lat', 'Long'])]
 
     country_path = r"assets/countries.csv"
     # do not use default NA values, because of NA region
     cf = pd.read_csv(country_path, sep=";", keep_default_na=False, na_values=[''])
     cf.index.names = ['id']
     pcf = cf
-    cf = cf.drop('code', 1)
-    cf = cf.drop('population', 1)
-    print(cf.head(20))
-    print(pcf.head(20))
+    cf = cf.drop('code', 1).drop('population', 1)
 
     # sum days cols values by country
     # prepare col list for grouping
@@ -57,7 +70,7 @@ if __name__ == '__main__':
     pcdf = gdf
 
     with open(in_path.joinpath("time_series_confirmed_country.csv"), 'w') as csv_file:
-        gdf.to_csv(path_or_buf=csv_file, sep=",", quotechar='"', line_terminator='\n', encoding='utf-8')
+        gdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
 
     gdf = gdf.drop('region', 1)
 
@@ -68,7 +81,7 @@ if __name__ == '__main__':
     rdf.index = pd.to_datetime(rdf.index)
 
     with open(in_path.joinpath("time_series_confirmed_country_pivot.csv"), 'w') as csv_file:
-        rdf.to_csv(path_or_buf=csv_file, sep=",", quotechar='"', line_terminator='\n', encoding='utf-8')
+        rdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8')
 
     # attention, garder country comme index
     # use df.diff() luke!
@@ -82,18 +95,19 @@ if __name__ == '__main__':
     # sort by max in last column
     tdf = tdf.sort_values(by=[date_cols[-1]], ascending=True)
 
-    # , decimal=decimal_char
     with open(in_path.joinpath("time_series_confirmed_country_day.csv"), 'w') as csv_file:
-        tdf.to_csv(path_or_buf=csv_file, sep=",", quotechar='"', line_terminator='\n', encoding='utf-8')
+        tdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
 
     # calc percentage change between 2 cols, rounded
     pdf = pdf.set_index("Country/Region").pct_change(periods=1, axis='columns').round(3)
     # insert region series
     pdf.insert(0, "region", value=reg["region"].values, allow_duplicates=True)
+    pdf = pdf.replace([np.inf, -np.inf], np.nan, regex=True)
 
     # use comma as decimal separator
+    # remove inf results
     with open(in_path.joinpath("time_series_confirmed_country_pct.csv"), 'w') as csv_file:
-        pdf.to_csv(path_or_buf=csv_file, sep=",", quotechar='"', line_terminator='\n', encoding='utf-8')
+        pdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
 
     # pcf pcdf
     pcdf = pd.concat([pcdf.set_index("Country/Region"), pcf.set_index("country")], axis=1, join='outer', sort=False)
@@ -114,4 +128,15 @@ if __name__ == '__main__':
 
     # cases by population and normalized for 1M
     with open(in_path.joinpath("time_series_confirmed_country_cases_1m_pop.csv"), 'w') as csv_file:
-        pcdf.to_csv(path_or_buf=csv_file, sep=",", quotechar='"', line_terminator='\n', encoding='utf-8')
+        pcdf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+
+    # log10 dataframe
+    # gdt_cols = gdf.columns[~gdf.columns.isin(['Country/Region'])]
+    ldf = gdf.apply(log10_row, axis=1)
+    # remove index id
+
+    # log10 cases by population
+    with open(in_path.joinpath("time_series_confirmed_country_log10.csv"), 'w') as csv_file:
+        ldf.to_csv(path_or_buf=csv_file, sep=";", line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+
+    print("Done")
