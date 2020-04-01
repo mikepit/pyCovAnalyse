@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     # rename korea
     df['Country/Region'] = df['Country/Region'].replace({'Korea, South': 'South Korea'})
-    # Remove Cruise Ship
+    # Remove ships
     df = df[~df['Country/Region'].isin(['Cruise Ship'])]
     df = df[~df['Country/Region'].isin(['Diamond Princess'])]
     # dt_cols = df.columns[~df.columns.isin(['Province/State', 'Country/Region', 'Lat', 'Long'])]
@@ -72,7 +72,8 @@ if __name__ == '__main__':
     pcdf = gdf
 
     with open(in_path.joinpath("time_series_confirmed_country.csv"), 'w') as csv_file:
-        gdf.to_csv(path_or_buf=csv_file, sep=sep_char, line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        gdf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
+                   decimal=decimal_char)
 
     gdf = gdf.drop('region', 1)
 
@@ -83,7 +84,7 @@ if __name__ == '__main__':
     rdf.index = pd.to_datetime(rdf.index)
 
     with open(in_path.joinpath("time_series_confirmed_country_pivot.csv"), 'w') as csv_file:
-        rdf.to_csv(path_or_buf=csv_file, sep=sep_char, line_terminator='\n', encoding='utf-8')
+        rdf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8')
 
     # attention, garder country comme index
     # use df.diff() luke!
@@ -98,7 +99,8 @@ if __name__ == '__main__':
     tdf = tdf.sort_values(by=[date_cols[-1]], ascending=True)
 
     with open(in_path.joinpath("time_series_confirmed_country_day.csv"), 'w') as csv_file:
-        tdf.to_csv(path_or_buf=csv_file, sep=sep_char, line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        tdf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
+                   decimal=decimal_char)
 
     # calc percentage change between 2 cols, rounded
     pdf = pdf.set_index("Country/Region").pct_change(periods=1, axis='columns').round(3)
@@ -109,7 +111,8 @@ if __name__ == '__main__':
     # use comma as decimal separator
     # remove inf results
     with open(in_path.joinpath("time_series_confirmed_country_pct.csv"), 'w') as csv_file:
-        pdf.to_csv(path_or_buf=csv_file, sep=sep_char, line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        pdf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
+                   decimal=decimal_char)
 
     # pcf pcdf
     pcdf = pd.concat([pcdf.set_index("Country/Region"), pcf.set_index("country")], axis=1, join='outer', sort=False)
@@ -130,7 +133,8 @@ if __name__ == '__main__':
 
     # cases by population and normalized for 1M
     with open(in_path.joinpath("time_series_confirmed_country_cases_1m_pop.csv"), 'w') as csv_file:
-        pcdf.to_csv(path_or_buf=csv_file, sep=sep_char, line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        pcdf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
+                    decimal=decimal_char)
 
     # log10 dataframe
     # gdt_cols = gdf.columns[~gdf.columns.isin(['Country/Region'])]
@@ -139,6 +143,87 @@ if __name__ == '__main__':
 
     # log10 cases by population
     with open(in_path.joinpath("time_series_confirmed_country_log10.csv"), 'w') as csv_file:
-        ldf.to_csv(path_or_buf=csv_file, sep=sep_char, line_terminator='\n', encoding='utf-8', decimal=decimal_char)
+        ldf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
+                   decimal=decimal_char)
+
+    # last 7 days, ups and downs
+    # use UID_ISO_FIPS_LookUp_Table to get country codes and join with population csv
+    # https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/UID_ISO_FIPS_LookUp_Table.csv
+
+    d_url = r"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master" \
+            r"/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
+    ddf = pd.read_csv(d_url)
+    ddf.index.names = ['id']
+    # rename korea
+    ddf['Country/Region'] = ddf['Country/Region'].replace({'Korea, South': 'South Korea'})
+    # Remove ships
+    ddf = ddf[~ddf['Country/Region'].isin(['Cruise Ship'])]
+    ddf = ddf[~ddf['Country/Region'].isin(['Diamond Princess'])]
+
+    ddf = ddf.groupby(['Country/Region']).agg(sum_cols).reset_index()
+    ddf.index.names = ['id']
+
+    # sort by max in last column
+    ddf = ddf.sort_values(by=[date_cols[-1]], ascending=True)
+    pddf = ddf
+    ddf = pd.concat([ddf.set_index("Country/Region"), cf.set_index("country")], axis=1, join='outer', sort=False)
+    ddf.index.names = ["Country/Region"]
+
+    # move region column to the beginning
+    ddf = ddf.reindex(columns=['region'] + ddf.columns[:-1].tolist())
+    ddf = ddf.reset_index()
+    ddf.index.names = ['id']
+
+    # remove rows without values
+    ddf = ddf.dropna(thresh=5)
+
+    with open(in_path.joinpath("time_series_deaths_country.csv"), 'w') as csv_file:
+        ddf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
+                   decimal=decimal_char)
+
+    # calc percentage change between 2 cols, rounded
+    pddf = pddf.set_index("Country/Region").pct_change(periods=1, axis='columns').round(3)
+    # insert region series
+    # pddf.insert(0, "region", value=reg["region"].values, allow_duplicates=True)
+    pddf = pddf.replace([np.inf, -np.inf], np.nan, regex=True)
+
+    # use comma as decimal separator
+    # remove inf results
+    with open(in_path.joinpath("time_series_deaths_country_pct.csv"), 'w') as csv_file:
+        pddf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
+                    decimal=decimal_char)
+
+    # Recovered
+    r_url = r"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/" \
+            r"csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv"
+    rdf = pd.read_csv(r_url)
+    rdf.index.names = ['id']
+    # rename korea
+    rdf['Country/Region'] = rdf['Country/Region'].replace({'Korea, South': 'South Korea'})
+    # Remove ships
+    rdf = rdf[~rdf['Country/Region'].isin(['Cruise Ship'])]
+    rdf = rdf[~rdf['Country/Region'].isin(['Diamond Princess'])]
+
+    print(rdf.head(5))
+
+    rdf = rdf.groupby(['Country/Region']).agg(sum_cols).reset_index()
+    rdf.index.names = ['id']
+
+    # sort by max in last column
+    rdf = rdf.sort_values(by=[date_cols[-1]], ascending=True)
+    rdf = pd.concat([rdf.set_index("Country/Region"), cf.set_index("country")], axis=1, join='outer', sort=False)
+    rdf.index.names = ["Country/Region"]
+
+    # move region column to the beginning
+    rdf = rdf.reindex(columns=['region'] + rdf.columns[:-1].tolist())
+    rdf = rdf.reset_index()
+    rdf.index.names = ['id']
+
+    # remove rows without values
+    rdf = rdf.dropna(thresh=5)
+
+    with open(in_path.joinpath("time_series_recovered_country.csv"), 'w') as csv_file:
+        rdf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
+                   decimal=decimal_char)
 
     print("Done")

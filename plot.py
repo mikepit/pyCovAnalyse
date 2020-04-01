@@ -26,47 +26,47 @@ if __name__ == '__main__':
 
     # small europeans (0-90)
     min_limit = 40
-    max_limit = 200
+    max_limit = 500
     nodata_mask = (e_df[date_cols[-1]] > min_limit) & (e_df[date_cols[-1]] < max_limit)
     se_df = e_df.loc[nodata_mask]
     se_df = se_df.tail(6)
 
     # middle europeans
-    min_limit = 201
-    max_limit = 1000
+    min_limit = 501
+    max_limit = 5000
     nodata_mask = (e_df[date_cols[-1]] > min_limit) & (e_df[date_cols[-1]] < max_limit)
     me_df = e_df.loc[nodata_mask]
     # limit results to max 8 countries
-    me_df = me_df.tail(6)
+    me_df = me_df.tail(8)
 
     # middle europeans 2
-    min_limit = 1001
-    max_limit = 10000
+    min_limit = 5001
+    max_limit = 50000
     nodata_mask = (e_df[date_cols[-1]] > min_limit) & (e_df[date_cols[-1]] < max_limit)
     me2_df = e_df.loc[nodata_mask]
-    me2_df = me2_df.tail(6)
+    me2_df = me2_df.tail(8)
 
     # large europeans
-    min_limit = 10001
+    min_limit = 50001
     max_limit = 9999999
     nodata_mask = (e_df[date_cols[-1]] > min_limit) & (e_df[date_cols[-1]] < max_limit)
     lei_df = e_df.loc[nodata_mask]
 
     # large europeans w/o italy
-    min_limit = 10001
+    min_limit = 50001
     max_limit = 9999999
     nodata_mask = (e_df[date_cols[-1]] > min_limit) & (e_df[date_cols[-1]] < max_limit) & (
             gdf["Country/Region"] != "Italy")
     le_df = e_df.loc[nodata_mask]
 
-    # top 5 world w/o china
+    # top 8 world w/o china
     # tail and not head because sort order
     nodata_mask = (gdf["Country/Region"] != "China")
-    t5_df = gdf.loc[nodata_mask].tail(5)
+    t5_df = gdf.loc[nodata_mask].tail(8)
 
-    # top 5 world
+    # top 8 world
     # tail and not head because sort order
-    t5c_df = gdf.tail(5)
+    t5c_df = gdf.tail(8)
 
     # *************
     # PLOT SECTION
