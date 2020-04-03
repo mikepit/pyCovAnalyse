@@ -166,6 +166,7 @@ if __name__ == '__main__':
     # sort by max in last column
     ddf = ddf.sort_values(by=[date_cols[-1]], ascending=True)
     pddf = ddf
+    dddf = ddf
     ddf = pd.concat([ddf.set_index("Country/Region"), cf.set_index("country")], axis=1, join='outer', sort=False)
     ddf.index.names = ["Country/Region"]
 
@@ -187,10 +188,14 @@ if __name__ == '__main__':
     # pddf.insert(0, "region", value=reg["region"].values, allow_duplicates=True)
     pddf = pddf.replace([np.inf, -np.inf], np.nan, regex=True)
 
-    # use comma as decimal separator
-    # remove inf results
     with open(in_path.joinpath("time_series_deaths_country_pct.csv"), 'w') as csv_file:
         pddf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
+                    decimal=decimal_char)
+
+    # by day
+    dddf = dddf.set_index("Country/Region").diff(periods=1, axis=1)
+    with open(in_path.joinpath("time_series_deaths_country_day.csv"), 'w') as csv_file:
+        dddf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
                     decimal=decimal_char)
 
     # Recovered

@@ -23,6 +23,7 @@ jobs:
       - name: Execute script
         run: |
             python process.py
+            python collect_belgium.py
       - name: Commit files
         run: |
             git config --local user.email "29627073+mikepit@users.noreply.github.com"
