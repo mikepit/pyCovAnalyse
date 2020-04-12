@@ -36,6 +36,7 @@ if __name__ == '__main__':
     # Remove ships
     df = df[~df['Country/Region'].isin(['Cruise Ship'])]
     df = df[~df['Country/Region'].isin(['Diamond Princess'])]
+    df = df[~df['Country/Region'].isin(['MS Zaandam'])]
     # dt_cols = df.columns[~df.columns.isin(['Province/State', 'Country/Region', 'Lat', 'Long'])]
 
     country_path = r"assets/countries.csv"
@@ -196,6 +197,28 @@ if __name__ == '__main__':
     dddf = dddf.set_index("Country/Region").diff(periods=1, axis=1)
     with open(in_path.joinpath("time_series_deaths_country_day.csv"), 'w') as csv_file:
         dddf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
+                    decimal=decimal_char)
+
+    # death by 1m population
+    d1df = pd.concat([ddf.set_index("Country/Region"), pcf.set_index("country")], axis=1, join='outer', sort=False)
+    d1df.index.names = ["Country/Region"]
+    d1df = d1df.drop('code', 1)
+    d1df = d1df.drop('region', 1)
+    d1df = d1df.dropna(thresh=5)
+
+    pop = pd.DataFrame()
+    # population normale pour la comparaison
+    # use 100K or 1M --> 1M
+    norm_pop = 1000000
+    pop["population"] = d1df.pop('population')
+    pop = pop.reset_index()
+    d1df = d1df.div(pop["population"].values, axis=0).mul(norm_pop).round(1)
+    # insert population series
+    d1df.insert(0, "population", value=pop["population"].values, allow_duplicates=True)
+
+    # cases by population and normalized for 1M
+    with open(in_path.joinpath("time_series_deaths_country_cases_1m_pop.csv"), 'w') as csv_file:
+        d1df.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
                     decimal=decimal_char)
 
     # Recovered
