@@ -163,7 +163,7 @@
 2020-03-29,"OostVlaanderen","Flanders",14,514,113,78,1,72,21
 2020-03-29,"VlaamsBrabant","Flanders",6,269,66,42,3,29,15
 2020-03-29,"BrabantWallon","Wallonia",2,60,15,12,0,7,3
-2020-03-29,"WestVlaanderen","Flanders",11,518,94,53,0,61,17
+2020-03-29,"WestVlaanderen","Flanders",11,516,94,53,0,61,17
 2020-03-30,"Antwerpen","Flanders",14,818,162,128,1,77,31
 2020-03-30,"Brussels","Brussels",15,790,164,132,6,53,31
 2020-03-30,"Hainaut","Wallonia",14,637,131,112,4,54,19
@@ -174,7 +174,7 @@
 2020-03-30,"OostVlaanderen","Flanders",14,570,121,80,1,78,28
 2020-03-30,"VlaamsBrabant","Flanders",6,290,62,46,4,26,8
 2020-03-30,"BrabantWallon","Wallonia",2,69,18,15,0,9,1
-2020-03-30,"WestVlaanderen","Flanders",11,536,91,58,0,49,13
+2020-03-30,"WestVlaanderen","Flanders",11,538,91,58,0,49,13
 2020-03-31,"Antwerpen","Flanders",14,816,179,146,1,88,98
 2020-03-31,"Brussels","Brussels",16,818,176,139,7,101,71
 2020-03-31,"Hainaut","Wallonia",14,627,132,114,5,54,55
@@ -317,7 +317,7 @@
 2020-04-12,"OostVlaanderen","Flanders",14,673,179,124,3,26,38
 2020-04-12,"VlaamsBrabant","Flanders",6,293,75,49,4,20,9
 2020-04-12,"BrabantWallon","Wallonia",2,71,15,11,0,8,2
-2020-04-12,"WestVlaanderen","Flanders",11,611,113,73,0,40,23
+2020-04-12,"WestVlaanderen","Flanders",11,631,113,73,0,40,23
 2020-04-13,"Antwerpen","Flanders",14,856,212,165,4,33,51
 2020-04-13,"Brussels","Brussels",15,908,189,138,15,37,35
 2020-04-13,"Hainaut","Wallonia",14,740,137,108,9,25,10
@@ -335,8 +335,19 @@
 2020-04-14,"Limburg","Flanders",7,463,98,71,2,30,13
 2020-04-14,"Liège","Wallonia",12,575,150,123,2,8,36
 2020-04-14,"Luxembourg","Wallonia",3,112,22,18,1,10,3
-2020-04-14,"Namur","Wallonia",6,200,48,32,4,9,5
+2020-04-14,"Namur","Wallonia",6,191,48,32,4,9,5
 2020-04-14,"OostVlaanderen","Flanders",14,666,152,109,4,39,28
 2020-04-14,"VlaamsBrabant","Flanders",6,298,69,43,4,11,11
 2020-04-14,"BrabantWallon","Wallonia",2,70,14,11,0,2,2
 2020-04-14,"WestVlaanderen","Flanders",11,654,123,70,0,35,33
+2020-04-15,"Antwerpen","Flanders",14,803,205,167,4,33,78
+2020-04-15,"Brussels","Brussels",16,857,174,139,14,45,71
+2020-04-15,"Hainaut","Wallonia",14,708,137,104,8,29,58
+2020-04-15,"Limburg","Flanders",7,439,93,69,2,32,46
+2020-04-15,"Liège","Wallonia",12,552,147,117,2,31,54
+2020-04-15,"Luxembourg","Wallonia",3,101,21,18,1,7,15
+2020-04-15,"Namur","Wallonia",6,189,49,33,5,7,12
+2020-04-15,"OostVlaanderen","Flanders",14,650,155,107,4,43,50
+2020-04-15,"VlaamsBrabant","Flanders",6,287,66,40,3,18,18
+2020-04-15,"BrabantWallon","Wallonia",2,67,12,10,0,2,4
+2020-04-15,"WestVlaanderen","Flanders",11,656,123,64,0,63,49
