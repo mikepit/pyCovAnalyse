@@ -21,7 +21,7 @@ if __name__ == '__main__':
     in_path = Path(path)
     # main dataframe
     # do not use default NA values, because of NA region
-    gdf = pd.read_csv(in_path.joinpath("time_series_confirmed_country.csv"), sep=";", encoding='utf-8',
+    gdf = pd.read_csv(in_path.joinpath("time_series_confirmed_country.csv"), sep=",", encoding='utf-8',
                       decimal=decimal_char, keep_default_na=False, na_values=[''])
     gdf = gdf.drop('id', 1)
     gdf.index.names = ['id']
@@ -83,6 +83,14 @@ if __name__ == '__main__':
     # top 8 world
     # tail and not head because sort order
     t5c_df = gdf.tail(8)
+
+    # Days since x cases
+    # time_series_confirmed_since_cases
+    dsdf = pd.read_csv(in_path.joinpath("time_series_confirmed_since_cases.csv"), sep=",", encoding='utf-8',
+                      decimal=decimal_char, keep_default_na=False, na_values=[''])
+    dsdf = dsdf[dsdf['Country'].isin(['Italy', 'Spain', 'France', 'Germany', 'Belgium', 'Sweden'])]
+    # perform a pivot for plotting
+    dsdf = dsdf.pivot(index='days', columns='Country', values='cases')
 
     # *************
     # PLOT SECTION
@@ -162,10 +170,5 @@ if __name__ == '__main__':
     redf_r.plot(linewidth=3, title="Small sized european countries")
     redf_m.plot(linewidth=3, title="Middle sized european countries")
     rldf.plot(linewidth=3, title="Log10")
+    dsdf.plot(linewidth=3, title=f"Days since 500 cases")
     plt.show()
-
-    # plt.close('all')
-    # fig, axes = plt.subplots(nrows=1, ncols=2)
-    # redf_m.plot(ax=axes[0], title="Middle sized european countries")
-    # redf_r.plot(ax=axes[1], title="Small sized european countries")
-    # plt.show()

@@ -16,6 +16,13 @@ def log10_row(row):
     return row
 
 
+def remove_ships(df):
+    df = df[~df['Country/Region'].isin(['Cruise Ship'])]
+    df = df[~df['Country/Region'].isin(['Diamond Princess'])]
+    df = df[~df['Country/Region'].isin(['MS Zaandam'])]
+    return df
+
+
 if __name__ == '__main__':
     data_url = r'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data' \
                r'/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv '
@@ -33,10 +40,9 @@ if __name__ == '__main__':
 
     # rename korea
     df['Country/Region'] = df['Country/Region'].replace({'Korea, South': 'South Korea'})
+    df['Country/Region'] = df['Country/Region'].replace({'Taiwan*': 'Taiwan'})
     # Remove ships
-    df = df[~df['Country/Region'].isin(['Cruise Ship'])]
-    df = df[~df['Country/Region'].isin(['Diamond Princess'])]
-    df = df[~df['Country/Region'].isin(['MS Zaandam'])]
+    df = remove_ships(df)
     # dt_cols = df.columns[~df.columns.isin(['Province/State', 'Country/Region', 'Lat', 'Long'])]
 
     country_path = r"assets/countries.csv"
@@ -67,7 +73,7 @@ if __name__ == '__main__':
 
     # remove rows without values
     gdf = gdf.dropna(thresh=5)
-    # copy gdf into tdf
+    # copy gdf into tdf ; try using .copy()
     tdf = gdf
     pdf = gdf
     pcdf = gdf
@@ -77,6 +83,37 @@ if __name__ == '__main__':
                    decimal=decimal_char)
 
     gdf = gdf.drop('region', 1)
+
+    # ---------------------------------------------------------------------------------------------------------
+    sdf = gdf.copy()
+    sdf = sdf.rename({'Country/Region': 'country'}, axis=1)
+    dt_cols = sdf.columns[~sdf.columns.isin(['country'])]
+    _min_cases = 700
+    _min_days = 100
+    _last_date = dt_cols[-1]
+
+    sdf = (sdf.set_index('country').stack().reset_index(name='confirmed').rename(columns={'level_1': 'date'}))
+    sdf['date'] = pd.to_datetime(sdf['date'], format='%m/%d/%y')
+
+    print(sdf.tail(5))
+
+    with open(in_path.joinpath("time_series_confirmed_stacked.csv"), 'w') as csv_file:
+        sdf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
+                   decimal=decimal_char)
+
+    # List countries
+    countries = sdf[sdf['date'].eq(_last_date)
+                    & sdf['confirmed'].ge(_min_cases)].sort_values(by='confirmed', ascending=False)
+    countries = countries['country'].values
+    # filter data to keep countries with _min_cases
+    dff2 = sdf[sdf['country'].isin(countries)].copy()
+
+    days_since = (dff2.assign(F=dff2['confirmed'].ge(_min_days)).set_index('date')
+                  .groupby('country')['F'].transform('idxmax'))
+    dff2['Days since 100 cases'] = (dff2['date'] - days_since.values).dt.days.values
+
+    # Remove all days where days since 100 < 0
+    dff2 = dff2[dff2['Days since 100 cases'].ge(0)]
 
     # full reshaped frame
     reshaped_df = pd.melt(gdf, id_vars=["Country/Region"], var_name="date")
@@ -147,19 +184,15 @@ if __name__ == '__main__':
         ldf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
                    decimal=decimal_char)
 
-    # last 7 days, ups and downs
-    # use UID_ISO_FIPS_LookUp_Table to get country codes and join with population csv
-    # https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/UID_ISO_FIPS_LookUp_Table.csv
-
     d_url = r"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master" \
             r"/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
     ddf = pd.read_csv(d_url)
     ddf.index.names = ['id']
     # rename korea
     ddf['Country/Region'] = ddf['Country/Region'].replace({'Korea, South': 'South Korea'})
+    ddf['Country/Region'] = ddf['Country/Region'].replace({'Taiwan*': 'Taiwan'})
     # Remove ships
-    ddf = ddf[~ddf['Country/Region'].isin(['Cruise Ship'])]
-    ddf = ddf[~ddf['Country/Region'].isin(['Diamond Princess'])]
+    ddf = remove_ships(ddf)
 
     ddf = ddf.groupby(['Country/Region']).agg(sum_cols).reset_index()
     ddf.index.names = ['id']
@@ -228,9 +261,9 @@ if __name__ == '__main__':
     rdf.index.names = ['id']
     # rename korea
     rdf['Country/Region'] = rdf['Country/Region'].replace({'Korea, South': 'South Korea'})
+    rdf['Country/Region'] = rdf['Country/Region'].replace({'Taiwan*': 'Taiwan'})
     # Remove ships
-    rdf = rdf[~rdf['Country/Region'].isin(['Cruise Ship'])]
-    rdf = rdf[~rdf['Country/Region'].isin(['Diamond Princess'])]
+    rdf = remove_ships(rdf)
 
     print(rdf.head(5))
 
@@ -252,6 +285,50 @@ if __name__ == '__main__':
 
     with open(in_path.joinpath("time_series_recovered_country.csv"), 'w') as csv_file:
         rdf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
+                   decimal=decimal_char)
+
+    df = pd.read_csv(data_url)
+    # rename countries
+    df['Country/Region'] = df['Country/Region'].replace({'Korea, South': 'South Korea', 'Taiwan*': 'Taiwan'})
+    # Remove Ships
+    df = df[~df['Country/Region'].isin(['Cruise Ship'])]
+    df = df[~df['Country/Region'].isin(['Cruise Ship'])]
+    df = df[~df['Country/Region'].isin(['Diamond Princess'])]
+    df = df[~df['Country/Region'].isin(['MS Zaandam'])]
+    dt_cols = df.columns[~df.columns.isin(['Province/State', 'Country/Region', 'Lat', 'Long'])]
+
+    dff = (df.groupby('Country/Region')[dt_cols].sum()
+           .stack().reset_index(name='Confirmed Cases')
+           .rename(columns={'level_1': 'Date', 'Country/Region': 'Country'}))
+    dff['Date'] = pd.to_datetime(dff['Date'], format='%m/%d/%y')
+
+    min_cases = 1000
+    last_date = dt_cols[-1]
+    since_cases_nbr = 500
+
+    # List countries, china excluded
+    countries = dff[dff['Date'].eq(last_date) & dff['Confirmed Cases'].ge(min_cases) &
+                    dff['Country'].ne('China')].sort_values(by='Confirmed Cases', ascending=False)
+    countries = countries['Country'].values
+
+    df_days = dff[dff['Country'].isin(countries)].copy()
+
+    days_since = (df_days.assign(F=df_days['Confirmed Cases'].ge(since_cases_nbr))
+                  .set_index('Date')
+                  .groupby('Country')['F'].transform('idxmax'))
+
+    # days since x cases column name
+    days_col = "days_x_cases"
+    df_days[days_col] = (df_days['Date'] - days_since.values).dt.days.values
+
+    # Remove all days where days since < 0
+    df_days = df_days[df_days[days_col].ge(0)]
+
+    gdf = df_days.drop('Date', 1)
+    gdf = gdf.rename(columns={days_col: 'days', 'Confirmed Cases': 'cases'})
+
+    with open(in_path.joinpath("time_series_confirmed_since_cases.csv"), 'w') as csv_file:
+        gdf.to_csv(path_or_buf=csv_file, sep=sep_char, quotechar='"', line_terminator='\n', encoding='utf-8',
                    decimal=decimal_char)
 
     print("Done")
