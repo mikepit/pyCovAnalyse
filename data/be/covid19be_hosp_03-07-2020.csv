@@ -1188,7 +1188,7 @@
 2020-06-30,"BrabantWallon","Wallonia",2,2,0,0,0,0,1
 2020-06-30,"WestVlaanderen","Flanders",11,32,2,1,0,7,5
 2020-07-01,"Antwerpen","Flanders",14,38,7,3,1,2,3
-2020-07-01,"Brussels","Brussels",15,29,12,6,1,0,5
+2020-07-01,"Brussels","Brussels",15,29,11,6,1,0,5
 2020-07-01,"Hainaut","Wallonia",14,20,3,1,0,0,3
 2020-07-01,"Limburg","Flanders",7,17,4,1,0,0,2
 2020-07-01,"LiÃ¨ge","Wallonia",12,14,3,1,0,0,1
@@ -1198,3 +1198,14 @@
 2020-07-01,"VlaamsBrabant","Flanders",6,9,2,1,0,0,1
 2020-07-01,"BrabantWallon","Wallonia",2,1,0,0,0,0,1
 2020-07-01,"WestVlaanderen","Flanders",11,32,2,0,0,4,4
+2020-07-02,"Antwerpen","Flanders",14,37,7,3,1,1,1
+2020-07-02,"Brussels","Brussels",15,24,11,5,1,2,3
+2020-07-02,"Hainaut","Wallonia",14,16,3,1,0,1,7
+2020-07-02,"Limburg","Flanders",7,14,4,1,0,2,6
+2020-07-02,"LiÃ¨ge","Wallonia",12,14,2,1,0,0,0
+2020-07-02,"Luxembourg","Wallonia",3,11,1,0,0,0,0
+2020-07-02,"Namur","Wallonia",6,5,0,0,0,0,0
+2020-07-02,"OostVlaanderen","Flanders",14,26,4,1,0,2,5
+2020-07-02,"VlaamsBrabant","Flanders",6,9,2,1,0,1,0
+2020-07-02,"BrabantWallon","Wallonia",2,0,0,0,0,0,1
+2020-07-02,"WestVlaanderen","Flanders",11,27,1,0,0,4,6
