@@ -1822,7 +1822,7 @@
 2020-08-27,"Luxembourg","Wallonia",3,0,0,0,0,0,0
 2020-08-27,"Namur","Wallonia",6,4,2,1,0,0,0
 2020-08-27,"OostVlaanderen","Flanders",14,22,4,1,0,2,5
-2020-08-27,"VlaamsBrabant","Flanders",6,15,7,3,0,0,1
+2020-08-27,"VlaamsBrabant","Flanders",6,14,7,3,0,0,2
 2020-08-27,"BrabantWallon","Wallonia",2,1,0,0,0,0,0
 2020-08-27,"WestVlaanderen","Flanders",11,12,1,0,0,1,0
 2020-08-28,"Antwerpen","Flanders",14,64,25,15,1,4,3
@@ -1833,6 +1833,17 @@
 2020-08-28,"Luxembourg","Wallonia",3,1,0,0,0,1,0
 2020-08-28,"Namur","Wallonia",6,3,1,1,0,0,1
 2020-08-28,"OostVlaanderen","Flanders",14,18,3,1,0,1,4
-2020-08-28,"VlaamsBrabant","Flanders",6,16,8,2,0,2,1
+2020-08-28,"VlaamsBrabant","Flanders",6,15,8,2,0,2,1
 2020-08-28,"BrabantWallon","Wallonia",2,1,0,0,0,0,0
 2020-08-28,"WestVlaanderen","Flanders",11,13,1,1,0,0,1
+2020-08-29,"Antwerpen","Flanders",14,57,22,14,1,1,8
+2020-08-29,"Brussels","Brussels",15,85,25,16,3,3,4
+2020-08-29,"Hainaut","Wallonia",14,12,0,0,0,0,1
+2020-08-29,"Limburg","Flanders",7,6,2,1,0,0,1
+2020-08-29,"LiÃ¨ge","Wallonia",12,23,10,5,0,0,1
+2020-08-29,"Luxembourg","Wallonia",3,1,0,0,0,0,0
+2020-08-29,"Namur","Wallonia",6,3,1,1,0,0,0
+2020-08-29,"OostVlaanderen","Flanders",14,12,3,2,0,0,4
+2020-08-29,"VlaamsBrabant","Flanders",6,15,8,2,0,0,1
+2020-08-29,"BrabantWallon","Wallonia",2,1,0,0,0,1,1
+2020-08-29,"WestVlaanderen","Flanders",11,15,1,1,0,1,0
