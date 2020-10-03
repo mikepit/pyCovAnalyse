@@ -2200,7 +2200,7 @@
 2020-09-30,"BrabantWallon","Wallonia",2,7,3,1,0,0,1
 2020-09-30,"WestVlaanderen","Flanders",11,45,8,3,0,4,3
 2020-10-01,"Antwerpen","Flanders",14,145,27,6,1,12,11
-2020-10-01,"Brussels","Brussels",15,245,49,32,3,33,24
+2020-10-01,"Brussels","Brussels",15,243,49,32,3,33,24
 2020-10-01,"Hainaut","Wallonia",14,94,15,9,0,10,4
 2020-10-01,"Limburg","Flanders",7,25,6,1,0,4,4
 2020-10-01,"LiÃ¨ge","Wallonia",12,100,20,11,0,9,9
@@ -2210,3 +2210,14 @@
 2020-10-01,"VlaamsBrabant","Flanders",6,25,5,1,0,4,1
 2020-10-01,"BrabantWallon","Wallonia",2,9,3,1,0,2,0
 2020-10-01,"WestVlaanderen","Flanders",11,45,10,3,0,4,3
+2020-10-02,"Antwerpen","Flanders",14,147,29,7,1,10,7
+2020-10-02,"Brussels","Brussels",15,240,50,32,4,11,12
+2020-10-02,"Hainaut","Wallonia",14,88,15,9,0,9,12
+2020-10-02,"Limburg","Flanders",7,25,6,0,0,3,4
+2020-10-02,"LiÃ¨ge","Wallonia",12,103,21,11,0,9,3
+2020-10-02,"Luxembourg","Wallonia",3,8,1,0,0,0,0
+2020-10-02,"Namur","Wallonia",6,17,4,1,1,6,0
+2020-10-02,"OostVlaanderen","Flanders",14,75,17,5,0,5,4
+2020-10-02,"VlaamsBrabant","Flanders",6,33,6,2,0,9,3
+2020-10-02,"BrabantWallon","Wallonia",2,9,2,1,0,1,1
+2020-10-02,"WestVlaanderen","Flanders",11,44,12,4,0,3,4
